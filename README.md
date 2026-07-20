@@ -199,9 +199,9 @@ Whenever these filters are used, the dashboard updates to show the churn rate of
 
 ## Launch
 
-The link to the interactive dashboard is available on the repo's description. 
+The interactive dashboard is built with Tableau and included in this repo as `Bank_Churn_Visualisation.twb`. Open it locally with Tableau Desktop (or Tableau Public) to explore the visualizations.
 
-This repo also contains the necessary files to run the visualization and database locally. Installation is necessary to host the visualization through localhost.
+This repo also contains the necessary files to run the ML app locally — see App Server Setup below.
 
 
 ---
