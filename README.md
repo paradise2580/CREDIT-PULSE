@@ -169,11 +169,7 @@ The churn class is a minority (~21% of customers), so accuracy alone is misleadi
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-## Visualisation
 
-## Interactive Visualisations
-
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## Exploratory Data Analysis
 Class imbalance and churn patterns explored before modeling:
 
@@ -194,6 +190,15 @@ German customers churn at nearly 2x the rate of France/Spain — consistent with
 </p>
 
 Churn rises with age, aligning with Age as a top-3 feature in the trained model.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Visualisation
+
+## Interactive Visualisations
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 ### **Interactive Tableau Dashboard**
