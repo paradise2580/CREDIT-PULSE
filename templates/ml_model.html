@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Models Overview</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="header">
+        <h1>Machine Learning Models Overview</h1>
+    </div>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="regression_model">Regression Model</a></li>
+            <li><a href="random_forest_model">Random Forest Model</a></li>
+            <li><a href="xgboost_model">XGBoost Model</a></li>
+            <li><a href="neural_network_model">Neural Network Model</a></li>
+        </ul>
+    </nav>
+    
+    <div class="model-summary">
+        <table>
+            <tr>
+                <th>Model</th>
+                <th>Accuracy Score</th>
+                <th>Techniques Used</th>
+                <th>Important Features</th>
+            </tr>
+            <tr>
+                <td>Logistic Regression</td>
+                <td>78.52%</td>
+                <td>Standard Scaler, Binary Encoding</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Random Forest</td>
+                <td>85.63%</td>
+                <td>SMOTE, Feature Selection</td>
+                <td>Age, Estimated Salary</td>
+            </tr>
+            <tr>
+                <td>XGBoost</td>
+                <td>86.73%</td>
+                <td>Gradient Boosting, Hyperparameter Tuning</td>
+                <td>Age, Number of Products</td>
+            </tr>
+            <tr>
+                <td>Neural Network</td>
+                <td>86.06%</td>
+                <td>Layer Optimization, SMOTE</td>
+                <td>-</td>
+            </tr>
+        </table>
+    </div>
+	<div class="model-comparison-summary">
+        <p>
+            In this customer churn prediction project, we evaluated four distinct machine learning models to identify the approach that best balances predictive performance with interpretability. Our investigation culminated in the determination that the XGBoost model yielded the highest accuracy, demonstrating exceptional performance and reliability. Despite the Neural Network's comparable accuracy, XGBoost was selected as the superior model due to its explanatory power and prevalent adoption in the banking industry, which places a high value on model interpretability alongside predictive accuracy.
+        </p>
+    </div>
+
+    <a href="/" class="home-button">Home Page</a>
+</body>
+</html>
