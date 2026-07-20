@@ -26,7 +26,7 @@ The bank churn prediction project aims to utilize machine learning techniques to
 
 2. **Machine Learning Model:** Various machine learning models, including Logistic Regression, Random Forest, XGBoost, and Neural Network, were trained and evaluated using the dataset. Metrics such as accuracy were used to compare the models, and the best-performing model was selected for deployment.
 
-3. **Flask App:** Flask App: A Flask web application was built to provide a user-friendly interface for inputting customer data and obtaining churn predictions, using the selected XGBoost model. Runs locally — see App Server Setup below.
+3. **Flask App:** Flask web application was built to provide a user-friendly interface for inputting customer data and obtaining churn predictions, using the selected XGBoost model. Runs locally — see App Server Setup below.
 
 4. **Visualization:** Tableau was utilized for data visualization to analyze patterns and trends within the dataset, providing valuable insights for model training and interpretation.
 
