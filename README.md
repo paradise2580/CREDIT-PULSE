@@ -36,7 +36,6 @@ The bank churn prediction project aims to utilize machine learning techniques to
 ### Technologies used
 
 - [Tensorflow](https://www.tensorflow.org/api_docs/python/tf)
-- [Flask](https://flask.palletsprojects.com/)
 - [RandomForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 - [XGBoost](https://xgboost.readthedocs.io/en/stable/)
 - [Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
