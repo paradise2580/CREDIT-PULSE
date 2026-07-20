@@ -100,6 +100,22 @@ The bank churn prediction project aims to utilize machine learning techniques to
 - `Exited`: Indicates if the customer has exited (1) or not (0).
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Model Performance
+
+Models were evaluated on a held-out test set (n=33,007) with class distribution ~79% retained / 21% churned.
+
+| Model | Accuracy | F1 (Churn class) | Precision (Churn) | Recall (Churn) |
+|---|---|---|---|---|
+| Logistic Regression | 0.827 | 0.470 | 0.67 | 0.36 |
+| Random Forest | 0.858 | 0.615 | 0.72 | 0.54 |
+| **XGBoost (selected)** | **0.866** | **0.640** | 0.75 | 0.56 |
+| Neural Network | 0.864 | 0.635 | 0.73 | 0.56 |
+
+**XGBoost was selected for deployment** — highest accuracy and F1 on the minority (churn) class.
+
+### Notes on class imbalance
+The churn class is a minority (~21% of customers), so accuracy alone is misleading — a model predicting "no churn" for everyone would score ~79% accuracy while catching zero at-risk customers. F1 and recall on the churn class are the metrics that matter here. Recall of 0.56 means the current model catches just over half of customers who will actually churn — a real limitation worth stating rather than hiding, and a natural next step (SMOTE, class weighting, or threshold tuning) for future work.
 ## Target Audience
 1. **Banking Institutions:** This project is particularly useful for banking institutions seeking to reduce customer churn rates. Banks can utilize the machine learning model to predict which customers are at risk of leaving. By identifying at-risk customers early, banks can implement targeted retention strategies to retain valuable customers and improve overall customer satisfaction.
 
