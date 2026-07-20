@@ -39,7 +39,7 @@ The bank churn prediction project aims to utilize machine learning techniques to
 - [RandomForest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)
 - [XGBoost](https://xgboost.readthedocs.io/en/stable/)
 - [Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
-- [Docker](https://docs.docker.com/)
+- [Streamlit](https://streamlit.io/)
 - [Imblearn](https://imbalanced-learn.org/stable/)
 - [Joblib](https://joblib.readthedocs.io/en/stable/)
   
