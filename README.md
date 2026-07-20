@@ -170,6 +170,30 @@ The churn class is a minority (~21% of customers), so accuracy alone is misleadi
 ## Visualisation
 
 ## Interactive Visualisations
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Exploratory Data Analysis
+Class imbalance and churn patterns explored before modeling:
+
+<p align="center">
+  <img src="./Images/eda_churnrate.png" width="70%">
+</p>
+
+Churn is imbalanced (~21% positive class) — this motivated using F1/recall over raw accuracy for model evaluation.
+
+<p align="center">
+  <img src="./Images/eda_churnrate_by_geography.png" width="70%">
+</p>
+
+German customers churn at nearly 2x the rate of France/Spain — consistent with `Is_Germany` appearing in the model's top feature importances.
+
+<p align="center">
+  <img src="./Images/eda_churnrate_by_age.png" width="70%">
+</p>
+
+Churn rises with age, aligning with Age as a top-3 feature in the trained model.
+
+
 ### ** Interactive Tableau Dashboard**
 This Tableau Dashboard contains:
 1)      An interactive histogram that shows the distribution of account balance of the dataset, as well as an interactive area chart that shows the Churn distribution across age range. The visualisations can be altered by clicking the slicer buttons to filter based on which country the user wants to see distribution for:
@@ -190,9 +214,6 @@ Whenever these filters are used, the dashboard updates to show the churn rate of
 <p align="center">
   <img src="./Images/Barchartcountries.gif" width="70%">
 </p>
- 
-
-
 
 
 ---
