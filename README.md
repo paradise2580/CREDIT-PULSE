@@ -26,7 +26,7 @@ The bank churn prediction project aims to utilize machine learning techniques to
 
 2. **Machine Learning Model:** Various machine learning models, including Logistic Regression, Random Forest, XGBoost, and Neural Network, were trained and evaluated using the dataset. Metrics such as accuracy were used to compare the models, and the best-performing model was selected for deployment.
 
-3. **Flask App:** A Flask web application was developed to provide a user-friendly interface for inputting customer data and obtaining churn predictions. The app utilizes the selected machine learning model to make real-time predictions.
+3. **Flask App:** Flask web application was built to provide a user-friendly interface for inputting customer data and obtaining churn predictions, using the selected XGBoost model. Runs locally — see App Server Setup below.
 
 4. **Visualization:** Tableau was utilized for data visualization to analyze patterns and trends within the dataset, providing valuable insights for model training and interpretation.
 
@@ -103,16 +103,56 @@ The bank churn prediction project aims to utilize machine learning techniques to
 
 ## Model Performance
 
-Models were evaluated on a held-out test set (n=33,007) with class distribution ~79% retained / 21% churned.
+Models evaluated on a held-out test set (n=33,007, ~21% churn rate).
 
-| Model | Accuracy | F1 (Churn class) | Precision (Churn) | Recall (Churn) |
+| Model | Accuracy | F1 (Churn) | Precision (Churn) | Recall (Churn) |
 |---|---|---|---|---|
 | Logistic Regression | 0.827 | 0.470 | 0.67 | 0.36 |
 | Random Forest | 0.858 | 0.615 | 0.72 | 0.54 |
 | **XGBoost (selected)** | **0.866** | **0.640** | 0.75 | 0.56 |
 | Neural Network | 0.864 | 0.635 | 0.73 | 0.56 |
 
-**XGBoost was selected for deployment** — highest accuracy and F1 on the minority (churn) class.
+XGBoost was selected based on highest accuracy and F1 on the churn class.
+
+### ROC-AUC
+XGBoost ROC-AUC: **0.890** — strong separability between churners and non-churners across thresholds.
+
+### Confusion Matrix (XGBoost, threshold = 0.5)
+|  | Predicted Retained | Predicted Churned |
+|---|---|---|
+| **Actual Retained** | 24,685 | 1,338 |
+| **Actual Churned** | 3,071 | 3,913 |
+
+At the default threshold, the model correctly flags 3,913 of 6,984 actual churners (56% recall) and misses 3,071 — the tradeoff explored below.
+
+### Feature Importance (XGBoost)
+| Feature | Importance |
+|---|---|
+| NumOfProducts | 0.425 |
+| IsActiveMember | 0.175 |
+| Age | 0.168 |
+| Is_Germany | 0.086 |
+| Is_Male | 0.071 |
+| Balance | 0.031 |
+| HasCrCard | 0.011 |
+| CreditScore | 0.008 |
+| Tenure | 0.007 |
+| Is_Spain | 0.007 |
+
+Number of products held and active-membership status are by far the strongest churn predictors — together accounting for 60% of the model's decision weight, more than demographic or balance features combined.
+
+### Threshold Tuning
+| Threshold | Precision | Recall | F1 |
+|---|---|---|---|
+| 0.3 | 0.620 | 0.713 | 0.663 |
+| 0.4 | 0.689 | 0.633 | 0.660 |
+| 0.5 (default) | 0.745 | 0.560 | 0.640 |
+| 0.6 | 0.792 | 0.469 | 0.589 |
+| 0.7 | 0.852 | 0.378 | 0.524 |
+
+Lowering the threshold to 0.3 raises churn recall from 56% to 71% at the cost of more false positives — a tradeoff a bank would tune based on the relative cost of a missed churner vs. an unnecessary retention offer. F1 peaks near threshold 0.3–0.4, suggesting the default 0.5 cutoff is not optimal for this imbalanced problem.
+
+
 
 ### Notes on class imbalance
 The churn class is a minority (~21% of customers), so accuracy alone is misleading — a model predicting "no churn" for everyone would score ~79% accuracy while catching zero at-risk customers. F1 and recall on the churn class are the metrics that matter here. Recall of 0.56 means the current model catches just over half of customers who will actually churn — a real limitation worth stating rather than hiding, and a natural next step (SMOTE, class weighting, or threshold tuning) for future work.
