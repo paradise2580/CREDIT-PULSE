@@ -40,8 +40,10 @@ The bank churn prediction project aims to utilize machine learning techniques to
 - [XGBoost](https://xgboost.readthedocs.io/en/stable/)
 - [Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html)
 - [Streamlit](https://streamlit.io/)
+- [Tableau](https://www.tableau.com/products/desktop)
 - [Imblearn](https://imbalanced-learn.org/stable/)
 - [Joblib](https://joblib.readthedocs.io/en/stable/)
+- 
   
 ## Analytics Dashboard (Preview)
 
@@ -194,7 +196,7 @@ German customers churn at nearly 2x the rate of France/Spain — consistent with
 Churn rises with age, aligning with Age as a top-3 feature in the trained model.
 
 
-### ** Interactive Tableau Dashboard**
+### **Interactive Tableau Dashboard**
 This Tableau Dashboard contains:
 1)      An interactive histogram that shows the distribution of account balance of the dataset, as well as an interactive area chart that shows the Churn distribution across age range. The visualisations can be altered by clicking the slicer buttons to filter based on which country the user wants to see distribution for:
 <p align="center">
@@ -219,8 +221,6 @@ Whenever these filters are used, the dashboard updates to show the churn rate of
 ---
 
 ## Launch
-
-The link to the interactive dashboard is available on the repo's description. 
 
 This repo also contains the necessary files to run the visualization and database locally. Installation is necessary to host the visualization through localhost.
 
