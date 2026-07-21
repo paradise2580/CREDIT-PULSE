@@ -27,25 +27,10 @@ import os
 load_dotenv()
 
 # Now you can access the variables using os.environ
-db_password = os.environ.get("database_password")
+db_url = os.environ.get("database_url")
 
-
-
-# # Check if the "dbpassword.txt" file exists
-# if os.path.isfile("dbpassword.txt"):
-#     # Read the database password from the external file
-#     with open("dbpassword.txt", "r") as password_file:
-#         db_password = password_file.read().strip()
-# else:
-#     # Provide guidance when the file is not found
-#     print("The 'dbpassword.txt' file was not found. Please create the file and add your database password to it.")
-#     exit()
-
-# Use the password in your URL
-url = f"postgresql://talish_68:{db_password}@ep-ancient-hat-a1q8jw52.ap-southeast-1.aws.neon.tech/Bank_Churn?sslmode=require"
-print(url)
 # Create connection to the Neon PostgreSQL database
-engine = create_engine(url)
+engine = create_engine(db_url)
 
 # Create a base for automatically mapping database tables to Python classes
 Base = automap_base()
@@ -54,9 +39,7 @@ Base = automap_base()
 Base.prepare(autoload_with=engine)
 
 
-print(Base.classes.keys())  # This will print out the names of all tables that were reflected
 churn_data_class = Base.classes.churn_data  # Access the churn_data class (this line assumes churn_data is the correct table name)
-print(dir(churn_data_class))  # This will print out all attributes/columns of the churn_data class
 
 # Access the "churn_data" table
 churn_data = Base.classes.churn_data
@@ -230,8 +213,4 @@ def sample_data():
 
 # Run the Flask app
 if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=9092)
-
-
-
- 
+    app.run(debug=False, host='localhost', port=9092)

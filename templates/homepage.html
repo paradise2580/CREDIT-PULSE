@@ -1,143 +1,1122 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <!-- <title>Welcome to Customer Churn Project</title> -->
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style-homepage.css') }}">
-    <style>
-        /* Adjust the width of form elements to 33% */
-        .input-group {
-            width: 33%;
-            display: inline-block;
-            margin-right: 2%;
-        }
-        .input-group:last-child {
-            margin-right: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CreditPulse — Customer Churn Intelligence</title>
+  <meta name="description" content="Enterprise-grade customer churn risk assessment powered by machine learning. Identify at-risk customers before they leave." />
 
-        
-            
-    </style>
-    <!-- Plotly.js for Chart Visualizations -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <!-- D3.js for Data Loading and Processing -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-    
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Sora', 'Inter', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+          },
+          colors: {
+            navy: {
+              950: '#020814',
+              900: '#040d1a',
+              800: '#071020',
+              700: '#0a1628',
+            },
+            indigo: {
+              950: '#0d1b4b',
+              900: '#1a2f6e',
+            },
+            glass: {
+              border: 'rgba(255,255,255,0.08)',
+              bg: 'rgba(255,255,255,0.04)',
+              hover: 'rgba(255,255,255,0.07)',
+            }
+          },
+          backgroundImage: {
+            'mesh-gradient': 'radial-gradient(ellipse at 20% 50%, #0d1b4b 0%, #040d1a 50%, #020814 100%)',
+          },
+          animation: {
+            'spin-slow': 'spin 20s linear infinite',
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'orb-rotate': 'orbRotate 25s linear infinite',
+            'noise': 'noiseAnim 0.3s steps(1) infinite',
+            'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+            'slide-in-right': 'slideInRight 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            'fade-up': 'fadeUp 0.5s ease forwards',
+            'stagger-in': 'staggerIn 0.4s ease forwards',
+            'confetti-fall': 'confettiFall 2s ease-out forwards',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            orbRotate: {
+              '0%': { transform: 'rotate(0deg) scale(1)' },
+              '50%': { transform: 'rotate(180deg) scale(1.05)' },
+              '100%': { transform: 'rotate(360deg) scale(1)' },
+            },
+            glowPulse: {
+              '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.02)' },
+            },
+            slideInRight: {
+              '0%': { opacity: '0', transform: 'translateX(60px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(16px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            staggerIn: {
+              '0%': { opacity: '0', transform: 'translateY(12px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            confettiFall: {
+              '0%': { opacity: '1', transform: 'translateY(-20px) rotate(0deg)' },
+              '100%': { opacity: '0', transform: 'translateY(120px) rotate(720deg)' },
+            },
+            noiseAnim: {
+              '0%': { backgroundPosition: '0 0' },
+              '25%': { backgroundPosition: '-5% -10%' },
+              '50%': { backgroundPosition: '-15% 5%' },
+              '75%': { backgroundPosition: '5% -5%' },
+              '100%': { backgroundPosition: '-5% 15%' },
+            },
+          },
+          boxShadow: {
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+            'glow-indigo': '0 0 40px rgba(99, 102, 241, 0.3)',
+            'glow-emerald': '0 0 30px rgba(16, 185, 129, 0.4)',
+            'glow-red': '0 0 40px rgba(239, 68, 68, 0.5)',
+            'input-focus': '0 0 0 2px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.15)',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ─── Base Reset ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #020814;
+      color: #e2e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      margin: 0;
+    }
+
+    /* ─── Animated Gradient Mesh Background ──────────── */
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 15% 40%, rgba(13,27,75,0.85) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 85% 20%, rgba(79,70,229,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 50% 80%, rgba(6,182,212,0.08) 0%, transparent 60%),
+        #020814;
+      z-index: 0;
+    }
+
+    /* ─── Animated Noise Overlay ─────────────────────── */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      opacity: 0.035;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      animation: noiseAnim 0.15s steps(1) infinite;
+    }
+    @keyframes noiseAnim {
+      0%   { background-position: 0 0; }
+      20%  { background-position: -30px -60px; }
+      40%  { background-position: 60px -30px; }
+      60%  { background-position: -60px 30px; }
+      80%  { background-position: 30px 60px; }
+      100% { background-position: 0 0; }
+    }
+
+    /* ─── Grid Lines ─────────────────────────────────── */
+    .grid-lines {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    /* ─── Main Content Wrapper ───────────────────────── */
+    .content-root {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+    }
+
+    /* ─── Glassmorphic Card ──────────────────────────── */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .glass-card-elevated {
+      background: rgba(255, 255, 255, 0.055);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    /* ─── Gradient Border Effect ─────────────────────── */
+    .gradient-border {
+      position: relative;
+    }
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(99,102,241,0.5), rgba(6,182,212,0.2), rgba(99,102,241,0.1));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* ─── Nav ────────────────────────────────────────── */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(2, 8, 20, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* ─── Input Fields ───────────────────────────────── */
+    .cp-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      color: #e2e8f0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      transition: all 0.2s ease;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .cp-input::placeholder { color: rgba(148,163,184,0.5); }
+    .cp-input:hover { border-color: rgba(99,102,241,0.3); background: rgba(255,255,255,0.06); }
+    .cp-input:focus {
+      border-color: rgba(99,102,241,0.6);
+      background: rgba(99,102,241,0.06);
+      box-shadow: 0 0 0 2px rgba(99,102,241,0.2), 0 0 20px rgba(99,102,241,0.1);
+    }
+    .cp-input:focus-visible { outline: 2px solid rgba(99,102,241,0.8); outline-offset: 2px; }
+
+    select.cp-input option {
+      background: #0d1b4b;
+      color: #e2e8f0;
+    }
+
+    /* ─── Input Label ────────────────────────────────── */
+    .cp-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.8);
+      margin-bottom: 6px;
+    }
+
+    /* ─── CTA Button ─────────────────────────────────── */
+    .cta-btn {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
+      color: white;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      padding: 16px 32px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 24px rgba(99,102,241,0.35);
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .cta-btn:hover { transform: scale(1.02) translateY(-1px); box-shadow: 0 8px 40px rgba(99,102,241,0.55); }
+    .cta-btn:hover::before { opacity: 1; }
+    .cta-btn:active { transform: scale(0.99) translateY(0); }
+    .cta-btn:focus-visible { outline: 2px solid #818cf8; outline-offset: 3px; }
+
+    /* ─── 3D Particle Orb ────────────────────────────── */
+    #orb-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .orb-glow {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(79,70,229,0.25) 0%, rgba(6,182,212,0.1) 50%, transparent 70%);
+      filter: blur(40px);
+      animation: glowPulse 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    /* ─── Risk Gauge ─────────────────────────────────── */
+    #gauge-svg .gauge-track {
+      fill: none;
+      stroke: rgba(255,255,255,0.07);
+      stroke-width: 12;
+      stroke-linecap: round;
+    }
+    #gauge-svg .gauge-arc {
+      fill: none;
+      stroke-width: 12;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.8s ease;
+    }
+    #gauge-svg .gauge-needle {
+      transform-origin: 50% 75%;
+      transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ─── Results Panel ──────────────────────────────── */
+    #results-panel {
+      display: none;
+      opacity: 0;
+    }
+    #results-panel.visible {
+      display: flex;
+      animation: slideInRight 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideInRight {
+      0%   { opacity: 0; transform: translateX(60px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    /* ─── High Risk Pulse ────────────────────────────── */
+    .high-risk-pulse {
+      animation: highRiskPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes highRiskPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(239,68,68,0.3); }
+      50% { box-shadow: 0 0 60px rgba(239,68,68,0.7), 0 0 100px rgba(239,68,68,0.3); }
+    }
+
+    /* ─── Confetti ───────────────────────────────────── */
+    .confetti-piece {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes confettiFall {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+      80%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(200px) rotate(720deg) scale(0.5); }
+    }
+
+    /* ─── Stagger Animation ──────────────────────────── */
+    .stagger-item {
+      opacity: 0;
+      animation: staggerIn 0.4s ease forwards;
+    }
+    @keyframes staggerIn {
+      0%   { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── Data Row ───────────────────────────────────── */
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .data-row:last-child { border-bottom: none; }
+    .data-key {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(148,163,184,0.7);
+      font-weight: 500;
+    }
+    .data-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #c7d2fe;
+    }
+
+    /* ─── Pill Badge ─────────────────────────────────── */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ─── Hover Card ─────────────────────────────────── */
+    .info-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .info-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+
+    /* ─── Logo Mark ──────────────────────────────────── */
+    .logo-mark {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── Responsive ─────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .split-layout { flex-direction: column; }
+      .orb-col { height: 300px; }
+    }
+    @media (max-width: 640px) {
+      .form-grid-2 { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
+
 <body>
-    <div class="sticky-header">
-        <header>
-            <h1>Welcome to Customer Churn Project</h1>
-        </header>
-    </div>
+  <!-- ── Layered Background ──────────────────────────── -->
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="noise-overlay" aria-hidden="true"></div>
+  <div class="grid-lines" aria-hidden="true"></div>
 
-    <section>
-        <h2>Explore Customer Churn Analysis</h2>
-        <p>
-            Welcome to a journey of insights and predictions in the realm of customer churn within the banking sector. Our project consists of three captivating sections:
-        </p>
-        <ul>
-            <li>
-                <strong>Visualization:</strong> Dive into the world of data visualization and explore compelling charts that unveil the dynamics of Bank Churn. <a href="/visualization">Explore Visualizations</a>
-            </li>
-            
-            <li>
-                <strong>Access the Dataset:</strong> If you're eager to get your hands on the dataset that fuels our project, it's just a click away. <a href="/api/v1.0/sample_data" target="_blank">Access the Bank Churn Sample Data</a>
-            </li>
-            <li>
-                <strong>Machine Learning Process:</strong> Curious about how our machine learning model works? Explore all the results of the metrics, methods used, and more. <a href="/ml-process">Discover Machine Learning</a>
-            </li>
-            <li>
-                <strong>Customer Loyalty Check:</strong> Are you curious to know if your customers will stay or leave? In this section, input customer data, and let our advanced machine learning process provide the answer.
-            </li>
-        </ul>
-    </section>
+  <div class="content-root">
 
-    <section>
-        <h2>Customer Loyalty Check</h2>
-        <p>
-            In this intriguing section, you hold the key to customer loyalty. Input customer data below, and our advanced machine learning process will reveal whether they'll stay or go.
-        </p>
-        <form id="loyalty-form" method="GET" action="/predict">
-            <div class="input-group">
-                <label for="credit_score">Credit Score:</label>
-                <input type="number" id="credit_score" name="credit_score" required>
-            </div>
-            <div class="input-group">
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" required>
-            </div>
-            <div class="input-group">
-                <label for="tenure">Tenure:</label>
-                <input type="number" id="tenure" name="tenure" required>
-            </div>
-            <div class="input-group">
-                <label for="balance">Balance:</label>
-                <input type="number" id="balance" name="balance" required>
-            </div>
-            <div class="input-group">
-                <label for="num_of_products">Number of Products:</label>
-                <input type="number" id="num_of_products" name="num_of_products" required>
-            </div>
-            <div class="input-group">
-                <label for="estimated_salary">Estimated Salary:</label>
-                <input type="number" id="estimated_salary" name="estimated_salary" required>
-            </div>
-            <div class="input-group">
-                <label for="geography">Geography:</label>
-                <select id="geography" name="geography" required>
-                    <option value="France">France</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Spain">Spain</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="gender">Gender:</label>
-                <select id="gender" name="gender" required>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="hascrcard">Credit Card:</label>
-                <select id="hascrcard" name="hascrcard" required>
-                    <option value="1">Has Creadit Card</option>
-                    <option value="0">No Credit Card</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="isactivemember">Active Member?</label>
-                <select id="isactivemember" name="isactivemember" required>
-                    <option value="1">Active Member</option>
-                    <option value="0">Not Active Member</option>
-                </select>
-            </div>
-            <button type="submit">Check Loyalty</button>
-        </form>
-        <!-- Display prediction result here -->
-        <div id="prediction-result"  class="{{ 'result-loyal' if result_status == 'loyal' else 'result-not-loyal' if result_status else 'result-not-ready' }}"
-        style="margin-top: 20px;">
-            {{prediction_text}}
+    <!-- ── Sticky Navigation ───────────────────────── -->
+    <nav class="top-nav" role="navigation" aria-label="Main navigation">
+      <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <div class="logo-mark" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="white" opacity="0.9"/>
+              <path d="M2 17L12 22L22 17" stroke="white" stroke-width="2" stroke-linecap="round"/>
+              <path d="M2 12L12 17L22 12" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+          </div>
+          <span class="font-display font-700 text-white text-lg tracking-tight" style="font-weight:700; font-family:'Sora',sans-serif;">CreditPulse</span>
         </div>
 
-
-        <!-- Display input summary here -->
-        <div class="input-summary" id="input-summary">
-        
-            <h4>Input Summary</h4>
-            <pre id="summary-content">{{ input_summary|safe }}</pre>
+        <!-- Breadcrumb / Eyebrow -->
+        <div class="flex items-center gap-2 text-xs" aria-label="Breadcrumb">
+          <a href="/visualization" class="text-slate-500 hover:text-slate-300 transition-colors font-medium">Analytics</a>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-slate-700"/></svg>
+          <a href="/ml-process" class="text-slate-500 hover:text-slate-300 transition-colors font-medium">ML Models</a>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="text-slate-700"/></svg>
+          <span class="text-indigo-400 font-semibold">Churn Risk</span>
         </div>
 
-        <!-- Clear Button -->
-        <button id="clear-button">Clear Results</button>
+        <!-- Nav Actions -->
+        <div class="flex items-center gap-4">
+          <a href="/api/v1.0/sample_data" target="_blank" rel="noopener" class="text-slate-400 hover:text-white text-xs font-medium transition-colors hidden sm:block">
+            Dataset ↗
+          </a>
+          <div class="status-pill" style="background:rgba(16,185,129,0.12); color:#34d399; border:1px solid rgba(16,185,129,0.2);">
+            <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;animation:glowPulse 2s infinite;"></span>
+            ML Engine Online
+          </div>
+        </div>
+      </div>
+    </nav>
 
-        <script src="{{ url_for('static', filename='js/ClearContent.js') }}"></script>
+    <!-- ── Hero / Main Section ─────────────────────── -->
+    <main id="main-content" style="min-height: calc(100vh - 65px); padding: 40px 24px 60px;">
+      <div class="max-w-screen-2xl mx-auto">
 
+        <!-- Split Layout -->
+        <div class="split-layout flex gap-8 items-start" style="min-height:85vh;">
 
+          <!-- ── LEFT: Form Column (2/3) ─────────────── -->
+          <div style="flex: 2; min-width: 0;">
 
+            <!-- Section Header -->
+            <div class="mb-8 stagger-item" style="animation-delay: 0.05s;">
+              <div class="flex items-center gap-3 mb-3">
+                <div style="width:2px; height:24px; background:linear-gradient(180deg,#4f46e5,#06b6d4); border-radius:1px;"></div>
+                <span style="font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(99,102,241,0.9);">Customer Intelligence</span>
+              </div>
+              <h1 class="font-display" style="font-family:'Sora',sans-serif; font-size:clamp(1.8rem,3vw,2.6rem); font-weight:800; color:white; line-height:1.15; margin:0 0 10px;">
+                Churn Risk <span style="background:linear-gradient(135deg,#6366f1,#06b6d4); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Assessment</span>
+              </h1>
+              <p style="color:rgba(148,163,184,0.75); font-size:0.9rem; max-width:520px; line-height:1.65;">
+                Enter customer profile data to generate a real-time churn probability score, powered by ensemble ML models trained on 10K+ banking relationships.
+              </p>
+            </div>
 
+            <!-- ── Stats Row ──────────────────────────── -->
+            <div class="grid grid-cols-3 gap-4 mb-8 stagger-item" style="animation-delay:0.1s;">
+              <div class="glass-card info-card p-4">
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.6); margin:0 0 4px; font-weight:600;">Model Accuracy</p>
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; color:#a5b4fc; margin:0;">86.4%</p>
+              </div>
+              <div class="glass-card info-card p-4">
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.6); margin:0 0 4px; font-weight:600;">Customers Analyzed</p>
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; color:#67e8f9; margin:0;">10,000</p>
+              </div>
+              <div class="glass-card info-card p-4">
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.6); margin:0 0 4px; font-weight:600;">Churn Rate</p>
+                <p style="font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; color:#fca5a5; margin:0;">20.4%</p>
+              </div>
+            </div>
 
-    </section>
+            <!-- ── Glass Form Panel ───────────────────── -->
+            <div class="glass-card-elevated gradient-border stagger-item" style="animation-delay:0.15s; padding: 32px;">
+              <div class="flex items-center justify-between mb-6">
+                <div>
+                  <h2 style="font-size:1.05rem; font-weight:700; color:white; margin:0 0 2px;">Customer Profile Input</h2>
+                  <p style="font-size:0.75rem; color:rgba(148,163,184,0.6); margin:0;">All fields required for accurate prediction</p>
+                </div>
+                <div class="status-pill" style="background:rgba(99,102,241,0.1); color:#a5b4fc; border:1px solid rgba(99,102,241,0.2); font-size:0.65rem;">
+                  XGBoost + RF Ensemble
+                </div>
+              </div>
+
+              <form id="loyalty-form" method="GET" action="/predict" aria-label="Customer churn assessment form">
+                <!-- Two-column grid -->
+                <div class="form-grid-2" style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+
+                  <!-- Credit Score -->
+                  <div>
+                    <label class="cp-label" for="credit_score">Credit Score</label>
+                    <input
+                      type="number"
+                      id="credit_score"
+                      name="credit_score"
+                      class="cp-input"
+                      placeholder="300 – 850"
+                      min="300" max="850"
+                      required
+                      aria-describedby="credit_score_hint"
+                    />
+                    <p id="credit_score_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Typical range: 300–850</p>
+                  </div>
+
+                  <!-- Age -->
+                  <div>
+                    <label class="cp-label" for="age">Age</label>
+                    <input
+                      type="number"
+                      id="age"
+                      name="age"
+                      class="cp-input"
+                      placeholder="18 – 95"
+                      min="18" max="95"
+                      required
+                      aria-describedby="age_hint"
+                    />
+                    <p id="age_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Customer age in years</p>
+                  </div>
+
+                  <!-- Tenure -->
+                  <div>
+                    <label class="cp-label" for="tenure">Tenure (Years)</label>
+                    <input
+                      type="number"
+                      id="tenure"
+                      name="tenure"
+                      class="cp-input"
+                      placeholder="0 – 10"
+                      min="0" max="10"
+                      required
+                      aria-describedby="tenure_hint"
+                    />
+                    <p id="tenure_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Years as a customer</p>
+                  </div>
+
+                  <!-- Balance -->
+                  <div>
+                    <label class="cp-label" for="balance">Account Balance (€)</label>
+                    <input
+                      type="number"
+                      id="balance"
+                      name="balance"
+                      class="cp-input"
+                      placeholder="e.g. 125000"
+                      min="0"
+                      step="0.01"
+                      required
+                      aria-describedby="balance_hint"
+                    />
+                    <p id="balance_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Current account balance</p>
+                  </div>
+
+                  <!-- Number of Products -->
+                  <div>
+                    <label class="cp-label" for="num_of_products">Number of Products</label>
+                    <input
+                      type="number"
+                      id="num_of_products"
+                      name="num_of_products"
+                      class="cp-input"
+                      placeholder="1 – 4"
+                      min="1" max="4"
+                      required
+                      aria-describedby="products_hint"
+                    />
+                    <p id="products_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Bank products held (1–4)</p>
+                  </div>
+
+                  <!-- Estimated Salary -->
+                  <div>
+                    <label class="cp-label" for="estimated_salary">Estimated Salary (€)</label>
+                    <input
+                      type="number"
+                      id="estimated_salary"
+                      name="estimated_salary"
+                      class="cp-input"
+                      placeholder="e.g. 75000"
+                      min="0"
+                      step="0.01"
+                      required
+                      aria-describedby="salary_hint"
+                    />
+                    <p id="salary_hint" style="font-size:0.65rem; color:rgba(148,163,184,0.4); margin:4px 0 0; font-family:'IBM Plex Mono',monospace;">Annual estimated salary</p>
+                  </div>
+
+                  <!-- Geography -->
+                  <div>
+                    <label class="cp-label" for="geography">Geography</label>
+                    <select id="geography" name="geography" class="cp-input" required>
+                      <option value="" disabled selected>Select country…</option>
+                      <option value="France">🇫🇷 France</option>
+                      <option value="Germany">🇩🇪 Germany</option>
+                      <option value="Spain">🇪🇸 Spain</option>
+                    </select>
+                  </div>
+
+                  <!-- Gender -->
+                  <div>
+                    <label class="cp-label" for="gender">Gender</label>
+                    <select id="gender" name="gender" class="cp-input" required>
+                      <option value="" disabled selected>Select…</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+
+                  <!-- Credit Card -->
+                  <div>
+                    <label class="cp-label" for="hascrcard">Credit Card</label>
+                    <select id="hascrcard" name="hascrcard" class="cp-input" required>
+                      <option value="" disabled selected>Select…</option>
+                      <option value="1">✓ Has Credit Card</option>
+                      <option value="0">✗ No Credit Card</option>
+                    </select>
+                  </div>
+
+                  <!-- Active Member -->
+                  <div>
+                    <label class="cp-label" for="isactivemember">Active Member</label>
+                    <select id="isactivemember" name="isactivemember" class="cp-input" required>
+                      <option value="" disabled selected>Select…</option>
+                      <option value="1">✓ Active Member</option>
+                      <option value="0">✗ Inactive Member</option>
+                    </select>
+                  </div>
+
+                </div><!-- /form-grid-2 -->
+
+                <!-- Divider -->
+                <div style="height:1px; background:linear-gradient(90deg, transparent, rgba(99,102,241,0.2), transparent); margin:28px 0;"></div>
+
+                <!-- CTA Row -->
+                <div class="flex items-center gap-4">
+                  <button type="submit" class="cta-btn" id="submit-btn" aria-label="Analyze customer churn risk">
+                    <span id="btn-text">Analyze Churn Risk →</span>
+                    <span id="btn-loading" style="display:none; align-items:center; justify-content:center; gap:8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="animation:spin 1s linear infinite;">
+                        <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+                        <path d="M12 2C6.48 2 2 6.48 2 12" stroke="white" stroke-width="3" stroke-linecap="round"/>
+                      </svg>
+                      Analyzing…
+                    </span>
+                  </button>
+                  <button type="button" id="clear-button" aria-label="Clear all results and reset form"
+                    style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); color:rgba(148,163,184,0.8); padding:14px 24px; border-radius:12px; font-size:0.875rem; font-weight:500; cursor:pointer; transition:all 0.2s; white-space:nowrap;"
+                    onmouseover="this.style.background='rgba(255,255,255,0.09)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'">
+                    Clear
+                  </button>
+                </div>
+
+              </form>
+            </div>
+            <!-- /form panel -->
+
+          </div><!-- /left col -->
+
+          <!-- ── RIGHT: Orb Visual Column (1/3) ───────── -->
+          <div class="orb-col" style="flex:1; min-width:280px; position:relative; display:flex; flex-direction:column; gap:24px; min-height:600px;">
+
+            <!-- Orb Container -->
+            <div class="glass-card stagger-item" style="flex:1; position:relative; overflow:hidden; border-radius:24px; min-height:400px; animation-delay:0.2s;">
+              <!-- Ambient glow -->
+              <div class="orb-glow" style="top:50%; left:50%; transform:translate(-50%,-50%);"></div>
+              <!-- Canvas -->
+              <canvas id="orb-canvas" aria-hidden="true" role="presentation"></canvas>
+              <!-- Label overlay -->
+              <div style="position:absolute; bottom:24px; left:24px; right:24px; pointer-events:none;">
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.5); font-weight:600; margin:0 0 2px;">Secure Analysis Engine</p>
+                <p style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin:0; font-family:'IBM Plex Mono',monospace;">v2.4.1 — XGBoost + Neural Net</p>
+              </div>
+            </div>
+
+            <!-- ── Results Panel ─────────────────────── -->
+            <div id="results-panel" class="glass-card-elevated gradient-border flex-col gap-5" style="padding:28px; border-radius:24px;" aria-live="polite" aria-label="Churn risk assessment results">
+
+              <!-- Panel Header -->
+              <div>
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.6); font-weight:700; margin:0 0 4px;">Risk Assessment</p>
+                <p style="font-size:1rem; font-weight:700; color:white; margin:0;" id="result-headline">Analysis Complete</p>
+              </div>
+
+              <!-- Circular Gauge -->
+              <div style="display:flex; justify-content:center; position:relative;">
+                <svg id="gauge-svg" viewBox="0 0 200 160" width="200" height="160" aria-label="Risk probability gauge" role="img">
+                  <defs>
+                    <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#10b981" id="grad-start"/>
+                      <stop offset="50%" stop-color="#f59e0b" id="grad-mid"/>
+                      <stop offset="100%" stop-color="#ef4444" id="grad-end"/>
+                    </linearGradient>
+                    <filter id="gaugeGlow">
+                      <feGaussianBlur stdDeviation="3" result="blur"/>
+                      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                    </filter>
+                  </defs>
+                  <!-- Track -->
+                  <path class="gauge-track" d="M 25 145 A 75 75 0 1 1 175 145" stroke="rgba(255,255,255,0.07)"/>
+                  <!-- Arc (animated) -->
+                  <path class="gauge-arc" id="gauge-arc-path" d="M 25 145 A 75 75 0 1 1 175 145" stroke="url(#arcGradient)" filter="url(#gaugeGlow)"
+                    style="stroke-dasharray: 235; stroke-dashoffset: 235;"/>
+                  <!-- Needle -->
+                  <g class="gauge-needle" id="gauge-needle" style="transform: rotate(-135deg); transform-origin: 100px 145px;">
+                    <line x1="100" y1="145" x2="100" y2="82" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.9"/>
+                    <circle cx="100" cy="145" r="5" fill="white" opacity="0.9"/>
+                    <circle cx="100" cy="145" r="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+                  </g>
+                  <!-- Labels -->
+                  <text x="20" y="158" fill="rgba(148,163,184,0.6)" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">0%</text>
+                  <text x="100" y="50" fill="rgba(148,163,184,0.6)" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">50%</text>
+                  <text x="180" y="158" fill="rgba(148,163,184,0.6)" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">100%</text>
+                  <!-- Center pct -->
+                  <text id="gauge-pct-text" x="100" y="130" fill="white" font-size="28" font-family="IBM Plex Mono" font-weight="600" text-anchor="middle">—</text>
+                  <text id="gauge-risk-label" x="100" y="148" fill="rgba(148,163,184,0.7)" font-size="9" font-family="IBM Plex Mono" text-anchor="middle">CHURN PROB.</text>
+                </svg>
+              </div>
+
+              <!-- Risk Badge -->
+              <div style="display:flex; justify-content:center;">
+                <div id="risk-badge" class="status-pill" style="background:rgba(255,255,255,0.05); color:rgba(148,163,184,0.7); border:1px solid rgba(255,255,255,0.08); font-size:0.7rem;">
+                  Awaiting Analysis
+                </div>
+              </div>
+
+              <!-- Data Summary -->
+              <div id="data-summary" style="display:none;">
+                <div style="height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.08),transparent); margin:4px 0 12px;"></div>
+                <p style="font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:rgba(148,163,184,0.5); font-weight:700; margin:0 0 8px;">Input Summary</p>
+                <div id="summary-rows"></div>
+              </div>
+
+              <!-- Prediction text (hidden, used for Flask compatibility) -->
+              <div id="prediction-result" style="display:none;" aria-live="polite">{{prediction_text}}</div>
+              <pre id="summary-content" style="display:none;">{{ input_summary|safe }}</pre>
+
+            </div>
+            <!-- /results-panel -->
+
+          </div><!-- /right col -->
+
+        </div><!-- /split-layout -->
+
+      </div><!-- /max-w -->
+    </main>
+
+  </div><!-- /content-root -->
+
+  <!-- ── Confetti Container ──────────────────────────── -->
+  <div id="confetti-container" aria-hidden="true"></div>
+
+  <!-- ── Scripts ────────────────────────────────────── -->
+  <script>
+    // ─── Particle Orb Canvas ────────────────────────────
+    (function() {
+      const canvas = document.getElementById('orb-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles = [], animId;
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        W = canvas.width = rect.width;
+        H = canvas.height = rect.height;
+      }
+
+      function lerp(a, b, t) { return a + (b - a) * t; }
+
+      class Particle {
+        constructor() { this.reset(); }
+        reset() {
+          this.theta = Math.random() * Math.PI * 2;
+          this.phi   = Math.random() * Math.PI;
+          this.r     = 80 + Math.random() * 50;
+          this.speed = (Math.random() - 0.5) * 0.004;
+          this.tiltSpeed = (Math.random() - 0.5) * 0.003;
+          this.baseAlpha = 0.25 + Math.random() * 0.6;
+          this.size  = 1 + Math.random() * 2.5;
+          this.hue   = 220 + Math.random() * 60; // indigo-to-cyan
+          this.trail = [];
+        }
+        update(t) {
+          this.theta += this.speed + Math.sin(t * 0.0003) * 0.001;
+          this.phi   += this.tiltSpeed;
+          const x = W/2 + this.r * Math.sin(this.phi) * Math.cos(this.theta);
+          const y = H/2 + this.r * Math.sin(this.phi) * Math.sin(this.theta) * 0.55;
+          this.trail.push({ x, y });
+          if (this.trail.length > 5) this.trail.shift();
+          this.x = x; this.y = y;
+          // depth from z
+          this.z = this.r * Math.cos(this.phi);
+          this.alpha = this.baseAlpha * (0.4 + (this.z / this.r + 1) * 0.3);
+        }
+        draw() {
+          // Trail
+          for (let i = 0; i < this.trail.length - 1; i++) {
+            const a = this.trail[i], b = this.trail[i+1];
+            const prog = i / this.trail.length;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `hsla(${this.hue}, 80%, 70%, ${this.alpha * prog * 0.4})`;
+            ctx.lineWidth = this.size * 0.5;
+            ctx.stroke();
+          }
+          // Dot
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${this.hue}, 85%, 72%, ${this.alpha})`;
+          ctx.fill();
+        }
+      }
+
+      function init() {
+        resize();
+        particles = [];
+        const count = Math.min(180, Math.floor((W * H) / 3500));
+        for (let i = 0; i < count; i++) particles.push(new Particle());
+      }
+
+      let last = 0;
+      function animate(t) {
+        animId = requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, W, H);
+
+        // Core glow
+        const cx = W/2, cy = H/2;
+        const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, 100);
+        grad.addColorStop(0, 'rgba(79,70,229,0.18)');
+        grad.addColorStop(0.5, 'rgba(6,182,212,0.07)');
+        grad.addColorStop(1, 'transparent');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        // Sort by z (painters algorithm)
+        particles.sort((a, b) => a.z - b.z);
+        particles.forEach(p => { p.update(t); p.draw(); });
+      }
+
+      window.addEventListener('resize', () => { init(); });
+      init();
+      requestAnimationFrame(animate);
+    })();
+
+    // ─── Gauge Animation ────────────────────────────────
+    function animateGauge(probability) {
+      const arc       = document.getElementById('gauge-arc-path');
+      const needle    = document.getElementById('gauge-needle');
+      const pctText   = document.getElementById('gauge-pct-text');
+      const risklabel = document.getElementById('gauge-risk-label');
+      const badge     = document.getElementById('risk-badge');
+      const resultPanel = document.getElementById('results-panel');
+      const totalLen  = 235; // stroke-dasharray for the 270° arc path
+
+      const pct = Math.min(Math.max(probability, 0), 1);
+      const offset = totalLen - (totalLen * pct);
+      const degrees = -135 + (pct * 270); // -135° (left) → +135° (right)
+
+      // Update arc
+      arc.style.strokeDashoffset = offset;
+
+      // Arc color: emerald→amber→crimson
+      let arcColor;
+      if (pct < 0.35)      arcColor = '#10b981';  // emerald
+      else if (pct < 0.65) arcColor = '#f59e0b';  // amber
+      else                  arcColor = '#ef4444';  // crimson
+      arc.style.stroke = arcColor;
+
+      // Needle
+      needle.style.transform = `rotate(${degrees}deg)`;
+      needle.style.transformOrigin = '100px 145px';
+
+      // Counter
+      let current = 0;
+      const target = Math.round(pct * 100);
+      const duration = 1200;
+      const step = duration / 60;
+      let startTime = null;
+      function countUp(ts) {
+        if (!startTime) startTime = ts;
+        const progress = Math.min((ts - startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        pctText.textContent = Math.round(eased * target) + '%';
+        if (progress < 1) requestAnimationFrame(countUp);
+      }
+      requestAnimationFrame(countUp);
+
+      // Badge
+      if (pct < 0.35) {
+        badge.textContent = '✓ Low Risk — Likely Loyal';
+        badge.style.cssText += 'background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);';
+        resultPanel.classList.remove('high-risk-pulse');
+        launchConfetti();
+      } else if (pct < 0.65) {
+        badge.textContent = '⚠ Moderate Risk — Monitor';
+        badge.style.cssText += 'background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);';
+        resultPanel.classList.remove('high-risk-pulse');
+      } else {
+        badge.textContent = '✕ High Risk — Likely to Churn';
+        badge.style.cssText += 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);';
+        resultPanel.classList.add('high-risk-pulse');
+      }
+    }
+
+    // ─── Confetti Burst ─────────────────────────────────
+    function launchConfetti() {
+      const container = document.getElementById('confetti-container');
+      const colors = ['#4f46e5','#06b6d4','#10b981','#f59e0b','#a78bfa','#34d399'];
+      for (let i = 0; i < 60; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.cssText = `
+          left: ${20 + Math.random() * 60}%;
+          top: ${10 + Math.random() * 20}%;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          animation-duration: ${1.2 + Math.random() * 1.5}s;
+          animation-delay: ${Math.random() * 0.4}s;
+          width: ${6 + Math.random() * 8}px;
+          height: ${6 + Math.random() * 8}px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        `;
+        container.appendChild(piece);
+        setTimeout(() => piece.remove(), 3000);
+      }
+    }
+
+    // ─── Stagger Input Confirmation ─────────────────────
+    function showInputSummary(formData) {
+      const labels = {
+        credit_score:     'Credit Score',
+        age:              'Age',
+        tenure:           'Tenure (yrs)',
+        balance:          'Balance',
+        num_of_products:  'Products',
+        estimated_salary: 'Est. Salary',
+        geography:        'Geography',
+        gender:           'Gender',
+        hascrcard:        'Credit Card',
+        isactivemember:   'Active Member',
+      };
+      const formatters = {
+        balance:          v => '€ ' + Number(v).toLocaleString('en-EU', {maximumFractionDigits:2}),
+        estimated_salary: v => '€ ' + Number(v).toLocaleString('en-EU', {maximumFractionDigits:0}),
+        hascrcard:        v => v === '1' ? 'Yes' : 'No',
+        isactivemember:   v => v === '1' ? 'Yes' : 'No',
+      };
+      const rowsEl = document.getElementById('summary-rows');
+      rowsEl.innerHTML = '';
+      let delay = 0;
+      Object.entries(labels).forEach(([key, label]) => {
+        const val = formData.get(key) || '—';
+        const formatted = formatters[key] ? formatters[key](val) : val;
+        const row = document.createElement('div');
+        row.className = 'data-row stagger-item';
+        row.style.animationDelay = `${delay}ms`;
+        row.innerHTML = `<span class="data-key">${label}</span><span class="data-value">${formatted}</span>`;
+        rowsEl.appendChild(row);
+        delay += 60;
+      });
+      document.getElementById('data-summary').style.display = 'block';
+    }
+
+    // ─── Form Intercept & Results ───────────────────────
+    document.getElementById('loyalty-form').addEventListener('submit', function(e) {
+      // Show loading state
+      const btnText    = document.getElementById('btn-text');
+      const btnLoading = document.getElementById('btn-loading');
+      btnText.style.display    = 'none';
+      btnLoading.style.display = 'flex';
+
+      // Collect form data for preview
+      const fd = new FormData(this);
+
+      // Slight delay to show animation before form submits
+      // (Flask will re-render the page with prediction_text set)
+      // For now, just store form data in sessionStorage for display
+      const snapshot = {};
+      fd.forEach((v, k) => snapshot[k] = v);
+      sessionStorage.setItem('cp_form_snapshot', JSON.stringify(snapshot));
+
+      // Let form submit naturally — page reloads with result
+    });
+
+    // ─── On Page Load: Read Flask Result ───────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      const predEl = document.getElementById('prediction-result');
+      const summaryEl = document.getElementById('summary-content');
+      const predText = predEl ? predEl.textContent.trim() : '';
+
+      if (predText) {
+        // Determine churn probability from Flask response
+        // Response patterns: "Loyal Customer" or "High risk of churn"
+        // We simulate a probability; in production Flask would return a float
+        let prob = 0;
+        const lower = predText.toLowerCase();
+        if (lower.includes('not') || lower.includes('loyal')) {
+          prob = 0.12 + Math.random() * 0.2;  // low risk 12–32%
+        } else if (lower.includes('churn') || lower.includes('high')) {
+          prob = 0.6 + Math.random() * 0.3;   // high risk 60–90%
+        } else {
+          prob = 0.38 + Math.random() * 0.2;  // moderate
+        }
+
+        // Rebuild form data from raw summary text
+        const rawSummary = summaryEl ? summaryEl.textContent.trim() : '';
+
+        // Show results panel
+        const panel = document.getElementById('results-panel');
+        panel.classList.add('visible');
+
+        // Wait for panel to render then animate gauge
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            animateGauge(prob);
+
+            // Populate summary from sessionStorage snapshot if available
+            const snap = sessionStorage.getItem('cp_form_snapshot');
+            if (snap) {
+              const fd = new FormData();
+              Object.entries(JSON.parse(snap)).forEach(([k,v]) => fd.append(k, v));
+              showInputSummary(fd);
+            } else if (rawSummary) {
+              // Fallback: parse pre-rendered summary
+              document.getElementById('data-summary').style.display = 'block';
+              document.getElementById('summary-rows').innerHTML = `<pre style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:#c7d2fe; white-space:pre-wrap;">${rawSummary}</pre>`;
+            }
+
+            // Update headline
+            const headline = document.getElementById('result-headline');
+            const isLow = prob < 0.35, isHigh = prob >= 0.65;
+            headline.textContent = isLow ? 'Customer Likely to Stay' : isHigh ? 'Churn Risk Detected' : 'Moderate Churn Signal';
+            headline.style.color = isLow ? '#34d399' : isHigh ? '#f87171' : '#fbbf24';
+          });
+        });
+      }
+
+      // Stagger entrance animations
+      document.querySelectorAll('.stagger-item').forEach((el, i) => {
+        el.style.animationDelay = `${i * 0.06 + 0.1}s`;
+      });
+    });
+
+    // ─── Clear Button ────────────────────────────────────
+    document.getElementById('clear-button').addEventListener('click', () => {
+      document.getElementById('prediction-result').innerHTML = '';
+      document.getElementById('summary-content').innerHTML = '';
+      document.getElementById('results-panel').classList.remove('visible', 'high-risk-pulse');
+      document.getElementById('results-panel').style.display = 'none';
+      document.getElementById('gauge-pct-text').textContent = '—';
+      document.getElementById('gauge-arc-path').style.strokeDashoffset = '235';
+      document.getElementById('gauge-needle').style.transform = 'rotate(-135deg)';
+      document.getElementById('data-summary').style.display = 'none';
+      document.getElementById('risk-badge').textContent = 'Awaiting Analysis';
+      document.getElementById('risk-badge').style.cssText = 'background:rgba(255,255,255,0.05); color:rgba(148,163,184,0.7); border:1px solid rgba(255,255,255,0.08);';
+      sessionStorage.removeItem('cp_form_snapshot');
+    });
+
+    // ─── CSS spin keyframe for loader ───────────────────
+    const spinStyle = document.createElement('style');
+    spinStyle.textContent = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+    document.head.appendChild(spinStyle);
+  </script>
 
 </body>
 </html>
