@@ -1,49 +1,44 @@
 # Importing related libraries and modules
 import os
-import re
-#import pickle
 
 from flask import Flask, jsonify, render_template, request
-from sqlalchemy import create_engine, and_
+from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from decimal import Decimal
-from urllib.parse import unquote_plus
-from urllib.parse import unquote
-import sqlalchemy
+from dotenv import load_dotenv
 from joblib import load
 import numpy as np
 
 
 #################################################
-# SQLAlchemy Database Setup
+# SQLAlchemy Database Setup (optional)
 #################################################
 
-#####
-from dotenv import load_dotenv
-import os
-
-# Load environment variables from .env file
 load_dotenv()
 
-# Now you can access the variables using os.environ
-db_url = os.environ.get("database_url")
+engine = None
+churn_data = None
+database_url = os.environ.get("DATABASE_URL")
 
-# Create connection to the Neon PostgreSQL database
-engine = create_engine(db_url)
+if database_url:
+    try:
+        engine = create_engine(database_url)
+        Base = automap_base()
+        Base.prepare(autoload_with=engine)
+        churn_data = Base.classes.churn_data
+        print("Database connected.")
+    except Exception as exc:
+        print(f"Database connection failed: {exc}")
+        print("App will run without /api/v1.0/sample_data.")
+else:
+    print(
+        "No DATABASE_URL in .env — app runs without DB. "
+        "Homepage, predictions, and Tableau dashboard still work."
+    )
 
-# Create a base for automatically mapping database tables to Python classes
-Base = automap_base()
-
-# Reflect the tables in the database
-Base.prepare(autoload_with=engine)
-
-
-churn_data_class = Base.classes.churn_data  # Access the churn_data class (this line assumes churn_data is the correct table name)
-
-# Access the "churn_data" table
-churn_data = Base.classes.churn_data
 #################################################
+
 #Loading Machine learning model
 #################################################
 # Assuming your model is named 'model.sav'
@@ -165,8 +160,11 @@ def predict():
 ############# Route #2 (Sample Data) ###############
 @app.route("/api/v1.0/sample_data")
 def sample_data():
-    # Used to preview some of the data from the Bank Churn database
-    # Returns sample data
+    if engine is None or churn_data is None:
+        return jsonify({
+            "error": "Database not configured. Add DATABASE_URL to your .env file "
+                     "(get a free connection string from https://neon.tech)."
+        }), 503
 
     # Establish session (link) from Python to the Bank Churn DB
     session = Session(engine)

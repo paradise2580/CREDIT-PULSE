@@ -199,9 +199,9 @@ Whenever these filters are used, the dashboard updates to show the churn rate of
 
 ## Launch
 
-The link to the interactive dashboard is available on the repo's description. 
+The interactive dashboard is built with Tableau and included in this repo as `Bank_Churn_Visualisation.twb`. Open it locally with Tableau Desktop (or Tableau Public) to explore the visualizations.
 
-This repo also contains the necessary files to run the visualization and database locally. Installation is necessary to host the visualization through localhost.
+This repo also contains the necessary files to run the ML app locally — see App Server Setup below.
 
 
 ---
@@ -209,8 +209,9 @@ This repo also contains the necessary files to run the visualization and databas
 ## App Server Setup 
 
 + Add DB Password  
-    You need to create dbpassword.txt in the project working directory and paste your database password there.  
-    Note: make sure to NOT commit this file to Git.
+    You need to create a `.env` file in the project working directory and add a line:  
+    `database_password=your_password_here`  
+    Note: make sure to NOT commit this file to Git (it's already covered by `.gitignore`).
 + (Once Only) Add New Virtual Environment
     * Open a new terminal and change directory to project working directory
     * Run below command in your project working directory  
