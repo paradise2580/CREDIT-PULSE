@@ -25,7 +25,7 @@ if database_url:
     try:
         engine = create_engine(database_url)
         Base = automap_base()
-        Base.prepare(autoload_with=engine)
+        Base.prepare(autoload_with=engine, schema="public")
         churn_data = Base.classes.churn_data
         print("Database connected.")
     except Exception as exc:
