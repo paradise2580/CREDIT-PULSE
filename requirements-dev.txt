@@ -1,0 +1,4 @@
+# Optional: Streamlit demo + local DB load script
+-r requirements.txt
+streamlit>=1.28
+pandas>=2.2
